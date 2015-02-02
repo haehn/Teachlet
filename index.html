@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Directory Picture Extractor</title>
+
+</head>
+<body>
+
+
+
+<a href="" id="link">BOOKMARKLET</a>
+
+<img src='hint.jpg'>
+
+<script>
+
+function grab_pics() {
+
+  var liste = "<div>";
+
+  var done =0;
+
+  var input = prompt('Provide a list of students');
+  input = input.split('\n').sort();
+
+
+  for (var name in input) {
+    name = input[name].trim();
+    var t = name.split(',');
+    name = t[1].trim() + " " + t[0].trim();
+    console.log(name);
+    $.get("https://connections.harvard.edu/search/pageNum/0/resultsPerPage/1?name="+name,function(data){
+
+      parser=new DOMParser();
+      xmlDoc=parser.parseFromString(data,"text/html"); 
+      liste += '<div class="block">' + ($('#compressedUser tr',xmlDoc).first().html()).replace('td','span') + '</div>';
+      done ++;
+
+      if (done === input.length) {
+
+         document.body.innerHTML = liste + '</div>';
+         $(".block").css("display", "inline-block");
+         $(".block").css("padding", "20px");
+         $(".block").css("font-size", "0.8em");
+         $("h5").remove();
+         $('img').css("display", "block");
+      }
+    });
+
+  }
+
+}
+document.getElementById('link').href = 'javascript:(' + grab_pics.toString()+')()';
+
+</script>
+
+</body>
+</html>
+
