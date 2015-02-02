@@ -1,25 +1,27 @@
 <html>
-<head>
-<title>Directory Picture Extractor</title>
-
-<style id="gallery" >
-  .block {
-    display: inline-block;
-    padding: 20px;
-    font-size: 0.8em;
-  }
-  h5 {
-    display: none;
-  }
+  <head>
+    <title>Harvard TEACHLET</title>
+    <style id="gallery" >
+      .block {
+        display: inline-block;
+        padding: 20px;
+        font-size: 0.8em;
+      }
+      h5 {
+        display: none;
+      }
 </style>
 </head>
 <body>
 
+<body style='font-family: sans-serif; font-size: 20pt;'>
+ <div><img src='logo.jpg'></div>
+ <div style='padding:20px'>Hi TF! This will help you memorize the names of your section students.</div>
+ <div><img src='1.png' style='vertical-align:middle'><span>Drag this bookmarklet <a href='' id='bookmarklet' alt='Teachlet' title='Teachlet'><img src='bookmark.png' width=50></a> to your bookmarks!</span></div>
+ <div><img src='2.png' style='vertical-align:middle'><span>Login to <a href="https://connections.harvard.edu/" target="_blank">Harvard Connections</a>.</span></div>
+ <div><img src='3.png' style='vertical-align:middle'><span>Click on the bookmarklet.</span></div>
 
 
-<a href="" id="link">BOOKMARKLET</a>
-
-<img src='hint.jpg'>
 
 <script>
 
@@ -84,7 +86,7 @@ var code = grab_pics.toString();
 var css = document.getElementById('gallery').innerText.replace('\r\n','  ');
 code = code.replace('ENTER_HERE', css);
 code = code.replacde('\r\n', '  ');
-document.getElementById('link').href = 'javascript:(' + code+')()';
+document.getElementById('bookmarklet').href = 'javascript:(' + code+')()';
 
 </script>
 
