@@ -26,26 +26,42 @@
 function grab_pics() {
   var cssCode = "ENTER_HERE";
 
-  var input = prompt('Provide a list of students');
-  input = input.split('\n');
+  function toNames(input) {
+    input = input.split('\n');
+    var names = input.map(function(line) {
+      var name = line.trim();
+      var t = name.split(',');
+      return {
+        name: name,
+        search: t[1].trim() + " " + t[0].trim()
+      }; 
+    });
+    return names; 
+  }
 
-  var names = input.map(function(line) {
-    var name = line.trim();
-    var t = name.split(',');
-    return {
-      name: name,
-      search: t[1].trim() + " " + t[0].trim()
-    }; 
-  });
+  function grabAll(names, onDone) {
+    var images = [];
+    var parser=new DOMParser();
+    names.forEach(function(name) {
+      console.log('grab',name.name);
+      $.get("https://connections.harvard.edu/search/pageNum/0/resultsPerPage/1?name="+name.search,function(data){
+        var xmlDoc=parser.parseFromString(data,"text/html"); 
+        images.push({
+          name: name.name,
+          code: $('#compressedUser tr',xmlDoc).first().html() 
+        });
+        console.log('grabbed',name.name);
+        if (images.length === names.length) {
+          onDone(names, images);
+        }
+      });
+    })
+  }
 
-  var images = [];
-
-  function done() {
-    //replace body
+  function done(names, images) {  
     images = images.sort(function(a, b) {
       return a.name.localeCompare(b.name);
     });
-    $('<style/>').appendTo('head').innerText = cssCode;
     
     document.body.innerHTML = '<div></div>';
 
@@ -55,21 +71,11 @@ function grab_pics() {
     });
   }
 
-  var parser=new DOMParser();
-
-  names.forEach(function(name) {
-    console.log('grab',name.name);
-    $.get("https://connections.harvard.edu/search/pageNum/0/resultsPerPage/1?name="+name.search,function(data){
-      var xmlDoc=parser.parseFromString(data,"text/html"); 
-      images.push({
-        name: name.name,
-        code: ($('#compressedUser tr',xmlDoc).first().html()).replace('td','span') 
-      });
-      console.log('grabbed',name.name);
-      if (images.length === names.length) {
-        done();
-      }
-    });
+  $('<form id="teachlet"><textarea placeholder="Copy List here"></textarea><button type="submit">Search</button></form>').appendTo('body').on('submit', function() {
+    var names = $(this).find('textarea').val();
+    names = toNames(names);
+    grabAll(names, done);
+    return false;
   });
 }
 
