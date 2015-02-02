@@ -48,7 +48,9 @@ function grab_pics() {
         search: t.length < 2 ? t[0].trim() : t[1].trim() + " " + t[0].trim()
       }; 
     });
-    return names; 
+    return names.filter(function(name) {
+      return name.name.trim().length > 0
+    }); 
   }
 
   function grabAll(names, onProgress, onDone) {
@@ -56,7 +58,7 @@ function grab_pics() {
     var parser=new DOMParser();
     names.forEach(function(name) {
       console.log('grab',name.name);
-      $.get("https://connections.harvard.edu/search/pageNum/0/resultsPerPage/1?name="+name.search,function(data){
+      $.get("https://connections.harvard.edu/search/pageNum/0/resultsPerPage/1?name="+name.search,function(data, error){
         var xmlDoc=parser.parseFromString(data,"text/html"); 
         images.push({
           name: name.name,
@@ -99,9 +101,9 @@ function grab_pics() {
 //inject code
 var code = grab_pics.toString();
 var css = document.getElementById('gallery').innerText.replace('\r\n',' ');
-var html = document.getElementById('gallerytext').innerText.replace('\r\n',' ');
+var hh = document.getElementById('gallerytext').innerHTML.replace('\r\n',' ');
 code = code.replace('ENTER_HERE', css);
-code = code.replace('ENTER_HTML', html);
+code = code.replace('ENTER_HTML', hh);
 code = code.replace('\r\n', ' ').replace('  ',' ').replace('  ',' ').replace('  ',' ').replace('  ',' ');
 document.getElementById('bookmarklet').href = 'javascript:(' + code +')()';
 
