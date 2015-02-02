@@ -50,7 +50,7 @@ function grab_pics() {
         var xmlDoc=parser.parseFromString(data,"text/html"); 
         images.push({
           name: name.name,
-          code: $('#compressedUser tr',xmlDoc).first().html() 
+          code: $('#compressedUser tr',xmlDoc).first().html().replace('<td>','').replace('</td>','') 
         });
         console.log('grabbed',name.name);
         if (images.length === names.length) {
@@ -73,6 +73,7 @@ function grab_pics() {
     });
   }
 
+  $('<style>').appendTo('head').text(cssCode);
   $('<form id="teachlet"><textarea placeholder="Copy List here"></textarea><button type="submit">Search</button></form>').appendTo('body').on('submit', function() {
     var names = $(this).find('textarea').val();
     names = toNames(names);
@@ -83,10 +84,10 @@ function grab_pics() {
 
 //inject code
 var code = grab_pics.toString();
-var css = document.getElementById('gallery').innerText.replace('\r\n','  ');
+var css = document.getElementById('gallery').innerText.replace('\r\n',' ');
 code = code.replace('ENTER_HERE', css);
-code = code.replacde('\r\n', '  ');
-document.getElementById('bookmarklet').href = 'javascript:(' + code+')()';
+code = code.replace('\r\n', ' ').replace('  ',' ').replace('  ',' ').replace('  ',' ').replace('  ',' ');
+document.getElementById('bookmarklet').href = 'javascript:(' + code +')()';
 
 </script>
 
