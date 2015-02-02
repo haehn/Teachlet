@@ -21,12 +21,14 @@
  <div><img src='2.png' style='vertical-align:middle'><span>Login to <a href="https://connections.harvard.edu/" target="_blank">Harvard Connections</a>.</span></div>
  <div><img src='3.png' style='vertical-align:middle'><span>Click on the bookmarklet <img src='bookmarklet.png' style='vertical-align:middle'></span></div>
 
-
-
+ <div id="gallerytext" style='display: none'>
+  <div></div>
+ </div>
 <script>
 
 function grab_pics() {
   var cssCode = "ENTER_HERE";
+  var htmlCode = "ENTER_HTML";
 
   function toNames(input) {
     input = input.split('\n');
@@ -35,13 +37,13 @@ function grab_pics() {
       var t = name.split(',');
       return {
         name: name,
-        search: t[1].trim() + " " + t[0].trim()
+        search: t.length < 2: t[0].trim() : t[1].trim() + " " + t[0].trim()
       }; 
     });
     return names; 
   }
 
-  function grabAll(names, onDone) {
+  function grabAll(names, onProgress, onDone) {
     var images = [];
     var parser=new DOMParser();
     names.forEach(function(name) {
@@ -52,7 +54,7 @@ function grab_pics() {
           name: name.name,
           code: $('#compressedUser tr',xmlDoc).first().html().replace('<td>','').replace('</td>','') 
         });
-        console.log('grabbed',name.name);
+        onProgress(names, images);
         if (images.length === names.length) {
           onDone(names, images);
         }
@@ -65,7 +67,7 @@ function grab_pics() {
       return a.name.localeCompare(b.name);
     });
     
-    document.body.innerHTML = '<div></div>';
+    document.body.innerHTML = htmlCode;
 
     var $div = $('div');
     images.forEach(function(row) {
@@ -74,10 +76,14 @@ function grab_pics() {
   }
 
   $('<style>').appendTo('head').text(cssCode);
-  $('<form id="teachlet"><textarea placeholder="Copy List here"></textarea><button type="submit">Search</button></form>').appendTo('body').on('submit', function() {
+  $('<form id="teachlet"><textarea placeholder="Copy List here"></textarea><button type="submit">Search</button><progress value="0" max="100"></progress></form>').appendTo('body').on('submit', function() {
     var names = $(this).find('textarea').val();
     names = toNames(names);
-    grabAll(names, done);
+    var $progress = $(this).find('progress').attr('max', names.length);
+    grabAll(names, function(names, images) {
+      console.log('grabbed',name.name);
+      $progress.val(images.length);
+    }, done);
     return false;
   });
 }
@@ -85,7 +91,9 @@ function grab_pics() {
 //inject code
 var code = grab_pics.toString();
 var css = document.getElementById('gallery').innerText.replace('\r\n',' ');
+var html = document.getElementById('gallerytext').innerText.replace('\r\n',' ');
 code = code.replace('ENTER_HERE', css);
+code = code.replace('ENTER_HTML', html);
 code = code.replace('\r\n', ' ').replace('  ',' ').replace('  ',' ').replace('  ',' ').replace('  ',' ');
 document.getElementById('bookmarklet').href = 'javascript:(' + code +')()';
 
