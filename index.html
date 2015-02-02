@@ -45,7 +45,7 @@ function grab_pics() {
       var t = name.split(',');
       return {
         name: name,
-        search: t.length < 2: t[0].trim() : t[1].trim() + " " + t[0].trim()
+        search: t.length < 2 ? t[0].trim() : t[1].trim() + " " + t[0].trim()
       }; 
     });
     return names; 
