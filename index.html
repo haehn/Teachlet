@@ -62,7 +62,7 @@ function grab_pics() {
         var xmlDoc=parser.parseFromString(data,"text/html"); 
         images.push({
           name: name.name,
-          code: $('#compressedUser tr',xmlDoc).first().html().replace('<td>','').replace('</td>','') 
+          code: $('#compressedUser tr',xmlDoc).first().html().replace('<td>','').replace('</td>','').replace('<a','<br><a')
         });
         onProgress(names, images);
         if (images.length === names.length) {
